@@ -36,9 +36,22 @@ router.get("/", async (req, res) => {
 
         // Pencarian judul dan deskripsi
         if (search && search.trim()) {
-            filter.$text = {
-                $search: search.trim()
-            };
+            const keyword = search.trim();
+
+            filter.$or = [
+                {
+                    title: {
+                        $regex: keyword,
+                        $options: "i"
+                    }
+                },
+                {
+                    description: {
+                        $regex: keyword,
+                        $options: "i"
+                    }
+                }
+            ];
         }
 
         const contents = await Content.find(filter)
